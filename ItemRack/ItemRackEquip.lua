@@ -284,12 +284,12 @@ function ItemRack.MoveItem(fromBag,fromSlot,toBag,toSlot)
 		return
 	else
 		if fromSlot then
-			PickupContainerItem(fromBag,fromSlot)
+			C_Contianer.PickupContainerItem(fromBag,fromSlot)
 		else
 			PickupInventoryItem(fromBag)
 		end
 		if toSlot then
-			PickupContainerItem(toBag,toSlot)
+			C_Contianer.PickupContainerItem(toBag,toSlot)
 		else
 			PickupInventoryItem(toBag)
 		end

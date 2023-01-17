@@ -598,7 +598,7 @@ end
 function ItemRack.GetID(bag,slot)
 	local itemLink
 	if slot then
-		itemLink = GetContainerItemLink(bag,slot)
+		itemLink = C_Container.GetContainerItemLink(bag,slot)
 	else
 		itemLink = GetInventoryItemLink("player",bag)
 	end
@@ -756,7 +756,7 @@ function ItemRack.FindSpace()
 	for i=4,0,-1 do
 		if ItemRack.ValidBag(i) then
 			for j=1,C_Container.GetContainerNumSlots(i) do
-				if not GetContainerItemLink(i,j) and not ItemRack.LockList[i][j] then
+				if not C_Container.GetContainerItemLink(i,j) and not ItemRack.LockList[i][j] then
 					ItemRack.LockList[i][j] = 1
 					return i,j
 				end
@@ -770,7 +770,7 @@ function ItemRack.FindBankSpace()
 	for _,i in pairs(ItemRack.BankSlots) do
 		if ItemRack.ValidBag(i) then
 			for j=1,C_Container.GetContainerNumSlots(i) do
-				if not GetContainerItemLink(i,j) and not ItemRack.LockList[i][j] then
+				if not C_Container.GetContainerItemLink(i,j) and not ItemRack.LockList[i][j] then
 					ItemRack.LockList[i][j] = 1
 					return i,j
 				end
@@ -1251,7 +1251,7 @@ end
 function ItemRack.ChatLinkID(itemID)
 	local inv,bag,slot = ItemRack.FindItem(itemID)
 	if bag then
-		ChatFrame1EditBox:Insert(GetContainerItemLink(bag,slot))
+		ChatFrame1EditBox:Insert(C_Container.GetContainerItemLink(bag,slot))
 	elseif inv then
 		ChatFrame1EditBox:Insert(GetInventoryItemLink("player",inv))
 	else
@@ -1346,7 +1346,7 @@ function ItemRack.EquipItemByID(id,slot)
 				if not isLocked and not IsInventoryItemLocked(slot) then
 					-- neither container item nor inventory item locked, perform swap
 					local _,_,equipSlot = ItemRack.GetInfoByID(id)
-					if equipSlot~="INVTYPE_2HWEAPON" or (ItemRack.HasTitansGrip and not ItemRack.NoTitansGrip[select(7,GetItemInfo(GetContainerItemLink(b,s))) or ""]) or not GetInventoryItemLink("player",17) then
+					if equipSlot~="INVTYPE_2HWEAPON" or (ItemRack.HasTitansGrip and not ItemRack.NoTitansGrip[select(7,GetItemInfo(C_Container.GetContainerItemLink(b,s))) or ""]) or not GetInventoryItemLink("player",17) then
 						PickupContainerItem(b,s)
 						PickupInventoryItem(slot)
 					else
@@ -1512,7 +1512,7 @@ function ItemRack.IDTooltip(self,itemID) --itemID is an ItemRack-style ID
 	else --cannot find the item in player's inventory or worn equipment!
 		bag,slot = ItemRack.FindInBank(itemID) --try to find the item in the player's bank IF they currently have the bank frame open
 		if bag then -- item found in player's bank
-			itemID = GetContainerItemLink(bag,slot) -- grab the itemLink from the found item in the player's bank
+			itemID = C_Container.GetContainerItemLink(bag,slot) -- grab the itemLink from the found item in the player's bank
 		else -- item is completely missing (no such strict OR baseID found anywhere): it's not in inventory, bank or worn items
 			itemID = ItemRack.IRStringToItemString(ItemRack.UpdateIRString(itemID)) -- ensure the stored ID is brought up to date, then generate a regular ItemString from it which can be used to display the required tooltip
 		end

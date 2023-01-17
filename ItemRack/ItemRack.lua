@@ -656,7 +656,7 @@ function ItemRack.FindItem(id,lock)
 
 	-- search bags
 	for i=4,0,-1 do
-		for j=1,GetContainerNumSlots(i) do
+		for j=1,C_Container.GetContainerNumSlots(i) do
 			if id==getid(i,j) and (not lock or not locklist[i][j]) then
 				if lock then locklist[i][j]=1 end
 				return nil,i,j
@@ -672,7 +672,7 @@ function ItemRack.FindItem(id,lock)
 	end
 	-- search bags for base id matches
 	for i=4,0,-1 do
-		for j=1,GetContainerNumSlots(i) do
+		for j=1,C_Container.GetContainerNumSlots(i) do
 			if sameid(id,getid(i,j)) and (not lock or not locklist[i][j]) then
 				if lock then locklist[i][j]=1 end
 				return nil,i,j
@@ -699,7 +699,7 @@ function ItemRack.FindInBank(id,lock)
 	if ItemRack.BankOpen then -- only proceed if bank is open
 		for _,i in pairs(ItemRack.BankSlots) do -- try to find an exact match at first
 			if ItemRack.ValidBag(i) then
-				for j=1,GetContainerNumSlots(i) do
+				for j=1,C_Container.GetContainerNumSlots(i) do
 					if id==getid(i,j) and (not lock or locklist[i][j]) then
 						if lock then locklist[i][j]=1 end
 						return i,j
@@ -709,7 +709,7 @@ function ItemRack.FindInBank(id,lock)
 		end
 		for _,i in pairs(ItemRack.BankSlots) do -- otherwise resort to a loose baseID match
 			if ItemRack.ValidBag(i) then
-				for j=1,GetContainerNumSlots(i) do
+				for j=1,C_Container.GetContainerNumSlots(i) do
 					if sameid(id,getid(i,j)) and (not lock or not locklist[i][j]) then
 						if lock then locklist[i][j]=1 end
 						return i,j
@@ -755,7 +755,7 @@ end
 function ItemRack.FindSpace()
 	for i=4,0,-1 do
 		if ItemRack.ValidBag(i) then
-			for j=1,GetContainerNumSlots(i) do
+			for j=1,C_Container.GetContainerNumSlots(i) do
 				if not GetContainerItemLink(i,j) and not ItemRack.LockList[i][j] then
 					ItemRack.LockList[i][j] = 1
 					return i,j
@@ -769,7 +769,7 @@ function ItemRack.FindBankSpace()
 	if not ItemRack.BankOpen then return end
 	for _,i in pairs(ItemRack.BankSlots) do
 		if ItemRack.ValidBag(i) then
-			for j=1,GetContainerNumSlots(i) do
+			for j=1,C_Container.GetContainerNumSlots(i) do
 				if not GetContainerItemLink(i,j) and not ItemRack.LockList[i][j] then
 					ItemRack.LockList[i][j] = 1
 					return i,j
@@ -854,7 +854,7 @@ function ItemRack.PopulateKnownItems()
 		end
 	end
 	for i=0,4 do
-		for j=1,GetContainerNumSlots(i) do
+		for j=1,C_Container.GetContainerNumSlots(i) do
 			id = getid(i,j) --grab ItemRack-style ID for every bag item
 			if id~=0 then
 				if IsEquippableItem(ItemRack.GetIRString(id,true)) then --only proceed if this is an equippable item (test against the baseID of the item)
@@ -1007,7 +1007,7 @@ function ItemRack.BuildMenu(id,menuInclude,masqueGroup)
 			end
 		end
 		for i=0,4 do
-			for j=1,GetContainerNumSlots(i) do
+			for j=1,C_Container.GetContainerNumSlots(i) do
 				itemID = ItemRack.GetID(i,j)
 				itemName,itemTexture,equipSlot = ItemRack.GetInfoByID(itemID)
 				if ItemRack.SlotInfo[id][equipSlot] and ItemRack.PlayerCanWear(id,i,j) and (ItemRackSettings.HideTradables=="OFF" or ItemRack.IsSoulbound(i,j)) then
@@ -1019,7 +1019,7 @@ function ItemRack.BuildMenu(id,menuInclude,masqueGroup)
 		end
 		if ItemRack.BankOpen then
 			for _,i in pairs(ItemRack.BankSlots) do
-				for j=1,GetContainerNumSlots(i) do
+				for j=1,C_Container.GetContainerNumSlots(i) do
 					itemID = ItemRack.GetID(i,j)
 					itemName,itemTexture,equipSlot = ItemRack.GetInfoByID(itemID)
 					if ItemRack.SlotInfo[id][equipSlot] and ItemRack.PlayerCanWear(id,i,j) and (ItemRackSettings.HideTradables=="OFF" or ItemRack.IsSoulbound(i,j)) then
@@ -1171,7 +1171,7 @@ function ItemRack.UpdateMenuCooldowns()
 	for i=1,#(ItemRack.Menu) do
 		baseID = tonumber(ItemRack.GetIRString(ItemRack.Menu[i],true)) --get baseID and convert it to number to be able to use it in numerical comparisons below
 		if baseID and baseID>0 and ItemRack.menuOpen<20 then
-			CooldownFrame_Set(_G["ItemRackMenu"..i.."Cooldown"],GetItemCooldown(baseID))
+			CooldownFrame_Set(_G["ItemRackMenu"..i.."Cooldown"],C_Container.GetItemCooldown(baseID))
 		else
 			_G["ItemRackMenu"..i.."Cooldown"]:Hide()
 		end
@@ -1185,7 +1185,7 @@ function ItemRack.WriteMenuCooldowns()
 		for i=1,#(ItemRack.Menu) do
 			baseID = ItemRack.GetIRString(ItemRack.Menu[i],true)
 			if baseID then
-				ItemRack.WriteCooldown(_G["ItemRackMenu"..i.."Time"],GetItemCooldown(baseID))
+				ItemRack.WriteCooldown(_G["ItemRackMenu"..i.."Time"],C_Container.GetItemCooldown(baseID))
 			else
 				_G["ItemRackMenu"..i.."Time"]:SetText("")
 			end
@@ -1671,7 +1671,7 @@ end
 function ItemRack.CooldownUpdate()
 	local inv,bag,slot,start,duration,name,remain
 	for i in pairs(ItemRackUser.ItemsUsed) do
-		start,duration = GetItemCooldown(i)
+		start,duration = C_Container.GetItemCooldown(i)
 		if start and ItemRackUser.ItemsUsed[i]<3 then
 			ItemRackUser.ItemsUsed[i] = ItemRackUser.ItemsUsed[i] + 1 -- count for 3 seconds before seeing if this is a real cooldown
 		elseif start then

@@ -145,8 +145,8 @@ function ItemRack.AnythingLocked()
 	end
 	if not isLocked then
 		for i=0,4 do
-			for j=1,GetContainerNumSlots(i) do
-				if select(3,GetContainerItemInfo(i,j)) then
+			for j=1,C_Container.GetContainerNumSlots(i) do
+				if select(3,C_Container.GetContainerItemInfo(i,j)) then
 					return 1
 				end
 			end
@@ -193,7 +193,7 @@ function ItemRack.IterateSwapList(setname)
 				inv,bag,slot = ItemRack.FindItem(swap[i],1)
 				if bag then
 					if i==16 and ItemRack.HasTitansGrip then
-						local subtype = select(7,GetItemInfo(GetContainerItemLink(bag,slot)))
+						local subtype = select(7,GetItemInfo(C_Container.GetContainerItemLink(bag,slot)))
 						if subtype and ItemRack.NoTitansGrip[subtype] then
 							treatAs2H = 1
 						end

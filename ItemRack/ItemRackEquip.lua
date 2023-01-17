@@ -276,7 +276,7 @@ function ItemRack.MoveItem(fromBag,fromSlot,toBag,toSlot)
 		return  -- oscarucb: ignore swap requests on slots containing "phantom" artifact items
 	elseif (not fromSlot and IsInventoryItemLocked(fromBag)) or (not toSlot and IsInventoryItemLocked(toBag)) then
 		abort = 4
-	elseif (fromSlot and select(3,GetContainerItemInfo(fromBag,fromSlot))) or (toSlot and select(3,GetContainerItemInfo(toBag,toSlot))) then
+	elseif (fromSlot and select(3,C_Container.GetContainerItemInfo(fromBag,fromSlot))) or (toSlot and select(3,C_Container.GetContainerItemInfo(toBag,toSlot))) then
 		abort = 4
 	end
 	if abort then
